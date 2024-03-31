@@ -1,3 +1,11 @@
+*.abi
+*.wasm
+!/external/**/*.abi
+!/external/**/*.wasm
+node_modules
+.DS_Store
+eosc-vault.json
+
 # Prerequisites
 *.d
 

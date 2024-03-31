@@ -1,0 +1,19 @@
+name: Bun Test
+
+on: push
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install CDT
+        run: |
+            curl https://gateway.pinata.cloud/ipfs/QmfFhXmbaZMgwVs51MHcUemG1A2XCNSTByRcAEG7S6iXaD -o cdt_4.0.1-1_amd64.deb
+            sudo apt install ./cdt_4.0.1-1_amd64.deb
+      - run: bun install
+      - run: bun run build
+      - run: bun run test
