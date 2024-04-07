@@ -61,6 +61,28 @@ public:
     void ramtransfer( const name& from, const name& to, int64_t bytes, const std::string& memo );
 
     /**
+     * Donatetorex action, donates funds to REX, increases REX pool return buckets
+     * Executes inline transfer from payer to system contract of tokens will be executed.
+     *
+     * @param payer - the payer of donated funds.
+     * @param quantity - the quantity of tokens to donated to REX with.
+     * @param memo - the memo string to accompany the transaction.
+     */
+    [[eosio::action]]
+    void donatetorex( const name& payer, const asset& quantity, const std::string& memo );
+
+    /**
+     * Buy RAM and immediately burn RAM.
+     * An inline transfer from payer to system contract of tokens will be executed.
+     *
+     * @param payer - the payer of buy RAM & burn.
+     * @param quantity - the quantity of tokens to buy RAM & burn with.
+     * @param memo - the memo string to accompany the transaction.
+     */
+    [[eosio::action]]
+    void buyramburn( const name& payer, const asset& quantity, const std::string& memo );
+
+    /**
      * Logging for buyram & buyrambytes action
      *
      * @param payer - the ram buyer,
@@ -76,9 +98,10 @@ public:
     using sellram_action = eosio::action_wrapper<"sellram"_n, &system_contract::sellram>;
     using buyrambytes_action = eosio::action_wrapper<"buyrambytes"_n, &system_contract::buyrambytes>;
     using buyram_action = eosio::action_wrapper<"buyram"_n, &system_contract::buyram>;
+    using buyramburn_action = eosio::action_wrapper<"buyramburn"_n, &system_contract::buyramburn>;
     using ramtransfer_action = eosio::action_wrapper<"ramtransfer"_n, &system_contract::ramtransfer>;
+    using donatetorex_action = eosio::action_wrapper<"donatetorex"_n, &system_contract::donatetorex>;
     using logbuyram_action = eosio::action_wrapper<"logbuyram"_n, &system_contract::logbuyram>;
-
 
     struct [[eosio::table, eosio::contract("eosio.system")]] exchange_state {
         asset    supply;

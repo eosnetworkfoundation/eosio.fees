@@ -22,6 +22,24 @@
             ]
         },
         {
+            "name": "buyramburn",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "buyrambytes",
             "base": "",
             "fields": [
@@ -50,6 +68,24 @@
                 {
                     "name": "weight",
                     "type": "float64"
+                }
+            ]
+        },
+        {
+            "name": "donatetorex",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
                 }
             ]
         },
@@ -294,8 +330,18 @@
             "ricardian_contract": ""
         },
         {
+            "name": "buyramburn",
+            "type": "buyramburn",
+            "ricardian_contract": ""
+        },
+        {
             "name": "buyrambytes",
             "type": "buyrambytes",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "donatetorex",
+            "type": "donatetorex",
             "ricardian_contract": ""
         },
         {

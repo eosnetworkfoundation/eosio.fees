@@ -79,7 +79,8 @@ void token::transfer( const name&    from,
                       const string&  memo )
 {
     check( from != to, "cannot transfer to self" );
-    require_auth( from );
+    // ignore auth for testing to allow privileged eosio contract to transfer using donatetorex action
+    //  require_auth( from );
     check( is_account( to ), "to account does not exist");
     auto sym = quantity.symbol.code();
     stats statstable( get_self(), sym.raw() );

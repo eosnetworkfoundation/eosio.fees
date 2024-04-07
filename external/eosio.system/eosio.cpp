@@ -2,6 +2,7 @@
 #include <eosio/system.hpp>
 #include <eosio/singleton.hpp>
 #include <eosio/asset.hpp>
+#include <eosio.token/eosio.token.hpp>
 
 #include <string>
 
@@ -29,6 +30,9 @@ public:
         const int64_t bytes = bytes_cost_with_fee(quant);
         add_ram(receiver, bytes);
         reserve_ram(bytes);
+
+        eosio::token::transfer_action transfer( "eosio.token"_n, { get_self(), "active"_n });
+        transfer.send( payer, "eosio.ram", quant, "buy ram" );
 
         // log buy ram action
         system_contract::logbuyram_action logbuyram_act{get_self(), {get_self(), "active"_n}};
@@ -84,6 +88,35 @@ public:
     }
 
     /**
+     * Donatetorex action, donates funds to REX, increases REX pool return buckets
+     * Executes inline transfer from payer to system contract of tokens will be executed.
+     *
+     * @param payer - the payer of donated funds.
+     * @param quantity - the quantity of tokens to donated to REX with.
+     * @param memo - the memo string to accompany the transaction.
+     */
+    [[eosio::action]]
+    void donatetorex( const name& payer, const asset& quantity, const std::string& memo )
+    {
+        eosio::token::transfer_action transfer( "eosio.token"_n, { get_self(), "active"_n });
+        transfer.send( payer, "eosio.rex", quantity, memo );
+    }
+
+    /**
+     * Buy RAM and immediately burn RAM.
+     * An inline transfer from payer to system contract of tokens will be executed.
+     *
+     * @param payer - the payer of buy RAM & burn.
+     * @param quantity - the quantity of tokens to buy RAM & burn with.
+     * @param memo - the memo string to accompany the transaction.
+     */
+    [[eosio::action]]
+    void buyramburn( const name& payer, const asset& quantity, const std::string& memo )
+    {
+        buyram(payer, "eosio.null"_n, quantity);
+    }
+
+    /**
      * Logging for buyram & buyrambytes action
      *
      * @param payer - the ram buyer,
@@ -98,7 +131,6 @@ public:
         require_auth(get_self());
         require_recipient( receiver );
     }
-
 
     [[eosio::action]]
     void init()
