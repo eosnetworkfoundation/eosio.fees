@@ -8,9 +8,9 @@ using namespace std;
 
 namespace eosio {
    /**
-    * The `eosio.fee` contract handles system fee distribution.
+    * The `eosio.fees` contract handles system fees distribution.
     */
-   class [[eosio::contract("eosio.fee")]] fee : public contract {
+   class [[eosio::contract("eosio.fees")]] fees : public contract {
       public:
          using contract::contract;
 
@@ -23,6 +23,6 @@ namespace eosio {
          [[eosio::action]]
          void distribute();
 
-         using distribute_action = eosio::action_wrapper<"distribute"_n, &fee::distribute>;
+         using distribute_action = eosio::action_wrapper<"distribute"_n, &fees::distribute>;
    };
 } /// namespace eosio

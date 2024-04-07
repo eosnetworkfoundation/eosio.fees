@@ -1,11 +1,11 @@
 {
     "type": "module",
     "scripts": {
-        "build": "cdt-cpp eosio.fee.cpp -I ./include",
+        "build": "cdt-cpp eosio.fees.cpp -I ./include",
         "test": "bun test"
     },
     "dependencies": {
-        "@proton/vert": "^0.3.24",
+        "@eosnetwork/vert": "^1.0.0",
         "@wharfkit/antelope": "^1.0.7",
         "@wharfkit/contract": "^1.1.5"
     },

@@ -1,8 +1,8 @@
-# EOS Fee (`eosio.fee`) [![Bun Test](https://github.com/eosnetworkfoundation/eosio.fee/actions/workflows/test.yml/badge.svg)](https://github.com/eosnetworkfoundation/eosio.fee/actions/workflows/test.yml)
+# EOS Fees (`eosio.fees`) [![Bun Test](https://github.com/eosnetworkfoundation/eosio.fees/actions/workflows/test.yml/badge.svg)](https://github.com/eosnetworkfoundation/eosio.fees/actions/workflows/test.yml)
 
 ## Overview
 
-The `eosio.fee` contract handles system fee distribution.
+The `eosio.fees` contract handles system fee distribution.
 
 ## Development and Testing
 
@@ -11,7 +11,7 @@ The `eosio.fee` contract handles system fee distribution.
 To compile the contract, developers can use the following command:
 
 ```sh
-$ cdt-cpp eosio.fee.cpp -I ./include
+$ cdt-cpp eosio.fees.cpp -I ./include
 ```
 
 ### Testing Framework

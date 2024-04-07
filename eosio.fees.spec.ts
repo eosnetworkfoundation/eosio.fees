@@ -9,9 +9,9 @@ const bob = 'bob'
 const charles = 'charles'
 blockchain.createAccounts(bob, alice, charles)
 
-const fee_contract = 'eosio.fee'
+const fees_contract = 'eosio.fees'
 const contracts = {
-    fee: blockchain.createContract(fee_contract, fee_contract, true),
+    fee: blockchain.createContract(fees_contract, fees_contract, true),
     token: blockchain.createContract('eosio.token', 'external/eosio.token/eosio.token', true),
     system: blockchain.createContract('eosio', 'external/eosio.system/eosio', true),
     fake: {
@@ -48,7 +48,7 @@ function getRamBytes(account: string) {
     return Int64.from(row.ram_bytes).toNumber()
 }
 
-describe(fee_contract, () => {
+describe(fees_contract, () => {
     test('eosio::init', async () => {
         await contracts.system.actions.init([]).send()
     })
