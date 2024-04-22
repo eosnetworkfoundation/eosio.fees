@@ -8,8 +8,9 @@ const blockchain = new Blockchain()
 const burn = 'eosio.null'
 const rex = 'eosio.rex'
 const ram = 'eosio.ram'
+const bpay = 'eosio.bpay'
 const bob = 'bob'
-blockchain.createAccounts(burn, rex, ram, bob)
+blockchain.createAccounts(burn, rex, ram, bpay, bob)
 
 const fees_contract = 'eosio.fees'
 const contracts = {
@@ -30,6 +31,14 @@ function getTokenBalance(account: string, symcode: string) {
         .getTableRow(primary_key)
     if (!row) return 0;
     return Asset.from(row.balance).units.toNumber()
+}
+
+function getStrategies() {
+    const scope = Name.from(fees_contract).value.value
+    const row = contracts.fees.tables
+        .strategies(scope)
+        .getTableRows()
+    return row;
 }
 
 function getRamBytes(account: string) {
@@ -64,8 +73,8 @@ describe(fees_contract, () => {
     })
 
     test("eosio.fees::setstrategy", async () => {
-        await contracts.fees.actions.setstrategy(['donatetorex', 1000]).send();
-        await contracts.fees.actions.setstrategy(['buyramburn', 500]).send();
+        await contracts.fees.actions.setstrategy(['donatetorex', 500]).send();
+        await contracts.fees.actions.setstrategy(['buyramburn', 1000]).send();
     });
 
     test("eosio.fees::distibute", async () => {
@@ -102,12 +111,12 @@ describe(fees_contract, () => {
         }
 
         // bytes
-        expect(after.burn.bytes - before.burn.bytes).toBe(17507766)
+        expect(after.burn.bytes - before.burn.bytes).toBe(35010801)
 
         // EOS
         expect(after.fees.balance - before.fees.balance).toBe(-60000000)
-        expect(after.rex.balance - before.rex.balance).toBe(40000000)
-        expect(after.ram.balance - before.ram.balance).toBe(20000000)
+        expect(after.rex.balance - before.rex.balance).toBe(20000000)
+        expect(after.ram.balance - before.ram.balance).toBe(40000000)
     });
 
     test('eosio.fees::distibute::error - epoch not finished', async () => {
@@ -121,18 +130,17 @@ describe(fees_contract, () => {
     });
 
     test("eosio.fees::buyramself", async () => {
-        // 50% RAM burn / 50% RAM buy / 0% REX
-        await contracts.fees.actions.delstrategy(['donatetorex']).send();
-        await contracts.fees.actions.setstrategy(['buyramburn', 500]).send();
-        await contracts.fees.actions.setstrategy(['buyramself', 500]).send();
-        await contracts.token.actions.transfer(['eosio.token', fees_contract, '1000.0000 EOS', '']).send();
+        // 66.6% RAM buy / 33.3% REX
+        await contracts.fees.actions.delstrategy([['buyramburn']]).send();
+        await contracts.fees.actions.setstrategy(['buyramself', 1000]).send();
+        await contracts.token.actions.transfer(['eosio.token', fees_contract, '1500.0000 EOS', '']).send();
         incrementTime();
         const before = {
             rex: {
                 balance: getTokenBalance(rex, 'EOS'),
             },
             fees: {
-                bytes: getRamBytes(burn),
+                bytes: getRamBytes(fees_contract),
             },
             burn: {
                 bytes: getRamBytes(burn),
@@ -144,14 +152,40 @@ describe(fees_contract, () => {
                 balance: getTokenBalance(rex, 'EOS'),
             },
             fees: {
-                bytes: getRamBytes(burn),
+                bytes: getRamBytes(fees_contract),
             },
             burn: {
                 bytes: getRamBytes(burn),
             }
         }
-        expect(after.burn.bytes - before.burn.bytes).toBe(4377385)
-        expect(after.fees.bytes - before.fees.bytes).toBe(4377385)
-        expect(after.rex.balance - before.rex.balance).toBe(0)
+        expect(after.fees.bytes - before.fees.bytes).toBe(8754474)
+        expect(after.rex.balance - before.rex.balance).toBe(5000000)
+    });
+
+    test("eosio.fees::eosio.bpay", async () => {
+        // 100% Block Producer Pay
+        await contracts.fees.actions.delstrategy([['buyramself', 'donatetorex']]).send();
+        await contracts.fees.actions.setstrategy(['eosio.bpay', 1000]).send();
+        const before = {
+            bpay: {
+                balance: getTokenBalance(bpay, 'EOS'),
+            },
+            fees: {
+                balance: getTokenBalance(fees_contract, 'EOS'),
+            },
+        }
+        await contracts.token.actions.transfer(['eosio.token', fees_contract, '1000.0000 EOS', '']).send();
+        incrementTime();
+        await contracts.fees.actions.distribute([]).send();
+        const after = {
+            bpay: {
+                balance: getTokenBalance(bpay, 'EOS'),
+            },
+            fees: {
+                balance: getTokenBalance(fees_contract, 'EOS'),
+            },
+        }
+        expect(after.bpay.balance - before.bpay.balance).toBe(10000000)
+        expect(after.fees.balance - before.fees.balance).toBe(0)
     });
 })

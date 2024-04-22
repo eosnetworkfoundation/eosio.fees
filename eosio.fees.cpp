@@ -37,13 +37,17 @@ void fees::setstrategy( const name strategy, const uint16_t weight ) {
 }
 
 [[eosio::action]]
-void fees::delstrategy( const name strategy )
+void fees::delstrategy( const vector<name> strategies )
 {
     require_auth( get_self() );
 
     strategies_table _strategies( get_self(), get_self().value );
-    auto &itr = _strategies.get(strategy.value, "strategy not found");
-    _strategies.erase(itr);
+
+    for (const auto& strategy : strategies) {
+        auto itr = _strategies.find(strategy.value);
+        check(itr != _strategies.end(), "strategy not found");
+        _strategies.erase(itr);
+    }
 }
 
 [[eosio::action]]
@@ -62,21 +66,30 @@ void fees::distribute()
         const asset fee_to_distribute = balance * row.weight / total_weight;
         if (fee_to_distribute.amount <= 0) continue; // skip if no fee to distribute
 
-        // Donate to REX
-        // Distributes fees to REX pool which is distributed to REX holders over a 30 day period
+        // dispatch actions
+        eosiosystem::system_contract::donatetorex_action donatetorex( "eosio"_n, { get_self(), "active"_n });
+        eosiosystem::system_contract::buyramburn_action buyramburn( "eosio"_n, { get_self(), "active"_n });
+        eosiosystem::system_contract::buyramself_action buyramself( "eosio"_n, { get_self(), "active"_n });
+        eosio::token::transfer_action transfer( "eosio.token"_n, { get_self(), "active"_n });
+
+        // Donate to REX - Distributes fees to REX pool which is distributed to REX holders over a 30 day period
         if ( row.strategy == "donatetorex"_n) {
-            eosiosystem::system_contract::donatetorex_action donatetorex( "eosio"_n, { get_self(), "active"_n });
             donatetorex.send( get_self(), fee_to_distribute, "system fees" );
-        // Buy RAM & Burn
-        // locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
+
+        // Buy RAM & Burn - locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
         } else if ( row.strategy == "buyramburn"_n) {
-            eosiosystem::system_contract::buyramburn_action buyramburn( "eosio"_n, { get_self(), "active"_n });
             buyramburn.send( get_self(), fee_to_distribute, "system fees" );
-        // Buy RAM Self
-        // Accumulates RAM bytes within the `eosio.fees` account
+
+        // Buy RAM Self -Accumulates RAM bytes within the `eosio.fees` account
         } else if ( row.strategy == "buyramself"_n) {
-            eosiosystem::system_contract::buyramself_action buyramself( "eosio"_n, { get_self(), "active"_n });
             buyramself.send( get_self(), fee_to_distribute );
+
+        // Block Producer Pay - Sends EOS to `eosio.bpay` contract for distribution to block producers
+        } else if ( row.strategy == "eosio.bpay"_n) {
+            transfer.send( get_self(), "eosio.bpay"_n, fee_to_distribute, "system fees" );
+
+        } else {
+            check( false, "strategy not defined");
         }
     }
 }
