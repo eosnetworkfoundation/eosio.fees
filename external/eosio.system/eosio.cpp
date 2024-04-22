@@ -40,6 +40,20 @@ public:
     }
 
     /**
+     * The buyramself action is designed to enhance the permission security by allowing an account to purchase RAM exclusively for itself.
+     * This action prevents the potential risk associated with standard actions like buyram and buyrambytes,
+     * which can transfer EOS tokens out of the account, acting as a proxy for eosio.token::transfer.
+     *
+     * @param account - the ram buyer and receiver,
+     * @param quant - the quantity of tokens to buy ram with.
+     */
+    [[eosio::action]]
+    void buyramself( const name& payer, const asset& quant )
+    {
+        buyram(payer, payer, quant);
+    }
+
+    /**
      * Buy a specific amount of ram bytes action. Increases receiver's ram in quantity of bytes provided.
      * An inline transfer from receiver to system contract of tokens will be executed.
      *

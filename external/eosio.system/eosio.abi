@@ -58,6 +58,20 @@
             ]
         },
         {
+            "name": "buyramself",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
+                    "name": "quant",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "connector",
             "base": "",
             "fields": [
@@ -337,6 +351,11 @@
         {
             "name": "buyrambytes",
             "type": "buyrambytes",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "buyramself",
+            "type": "buyramself",
             "ricardian_contract": ""
         },
         {

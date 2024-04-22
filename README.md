@@ -10,8 +10,9 @@ The `eosio.fees` contract is designed to distribute fees from any outstanding EO
 
 | Strategy      | Description |
 | ------------- | --- |
-| `donatetorex` |  Donate to REX - Distributes fees to REX pool which is distributed to REX holders over a 30 day period |
-| `buyramburn`  | Buy RAM & Burn - locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
+| `donatetorex` | Donate to REX - Distributes fees to REX pool which is distributed to REX holders over a 30 day period |
+| `buyramburn`  | Buy RAM & Burn - Locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
+| `buyramself`  | Buy RAM Self - Accumulates RAM bytes within the `eosio.fees` account
 
 ## Development and Testing
 

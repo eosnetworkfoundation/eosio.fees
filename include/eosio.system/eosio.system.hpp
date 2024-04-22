@@ -83,6 +83,17 @@ public:
     void buyramburn( const name& payer, const asset& quantity, const std::string& memo );
 
     /**
+     * The buyramself action is designed to enhance the permission security by allowing an account to purchase RAM exclusively for itself.
+     * This action prevents the potential risk associated with standard actions like buyram and buyrambytes,
+     * which can transfer EOS tokens out of the account, acting as a proxy for eosio.token::transfer.
+     *
+     * @param account - the ram buyer and receiver,
+     * @param quant - the quantity of tokens to buy ram with.
+     */
+    [[eosio::action]]
+    void buyramself( const name& account, const asset& quant );
+
+    /**
      * Logging for buyram & buyrambytes action
      *
      * @param payer - the ram buyer,
@@ -98,6 +109,7 @@ public:
     using sellram_action = eosio::action_wrapper<"sellram"_n, &system_contract::sellram>;
     using buyrambytes_action = eosio::action_wrapper<"buyrambytes"_n, &system_contract::buyrambytes>;
     using buyram_action = eosio::action_wrapper<"buyram"_n, &system_contract::buyram>;
+    using buyramself_action = eosio::action_wrapper<"buyramself"_n, &system_contract::buyramself>;
     using buyramburn_action = eosio::action_wrapper<"buyramburn"_n, &system_contract::buyramburn>;
     using ramtransfer_action = eosio::action_wrapper<"ramtransfer"_n, &system_contract::ramtransfer>;
     using donatetorex_action = eosio::action_wrapper<"donatetorex"_n, &system_contract::donatetorex>;

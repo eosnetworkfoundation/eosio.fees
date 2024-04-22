@@ -11,6 +11,7 @@ namespace eosio {
 
     const set<name> STRATEGIES = {
         "buyramburn"_n,
+        "buyramself"_n,
         "donatetorex"_n
     };
     /**

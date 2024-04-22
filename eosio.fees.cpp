@@ -67,11 +67,16 @@ void fees::distribute()
         if ( row.strategy == "donatetorex"_n) {
             eosiosystem::system_contract::donatetorex_action donatetorex( "eosio"_n, { get_self(), "active"_n });
             donatetorex.send( get_self(), fee_to_distribute, "system fees" );
-        // Buy RAM & burn bytes
+        // Buy RAM & Burn
         // locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
         } else if ( row.strategy == "buyramburn"_n) {
             eosiosystem::system_contract::buyramburn_action buyramburn( "eosio"_n, { get_self(), "active"_n });
             buyramburn.send( get_self(), fee_to_distribute, "system fees" );
+        // Buy RAM Self
+        // Accumulates RAM bytes within the `eosio.fees` account
+        } else if ( row.strategy == "buyramself"_n) {
+            eosiosystem::system_contract::buyramself_action buyramself( "eosio"_n, { get_self(), "active"_n });
+            buyramself.send( get_self(), fee_to_distribute );
         }
     }
 }

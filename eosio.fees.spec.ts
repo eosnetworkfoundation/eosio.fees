@@ -41,6 +41,13 @@ function getRamBytes(account: string) {
     return Int64.from(row.ram_bytes).toNumber()
 }
 
+const TEN_MINUTES = 600;
+
+function incrementTime(seconds = TEN_MINUTES) {
+    const time = TimePointSec.fromInteger(seconds);
+    return blockchain.addTime(time);
+}
+
 describe(fees_contract, () => {
     test('eosio::init', async () => {
         await contracts.system.actions.init([]).send()
@@ -53,12 +60,12 @@ describe(fees_contract, () => {
     })
 
     test('eosio.fees::init', async () => {
-        await contracts.fees.actions.init([600]).send()
+        await contracts.fees.actions.init([TEN_MINUTES]).send()
     })
 
     test("eosio.fees::setstrategy", async () => {
-        await contracts.fees.actions.setstrategy(['donatetorex', 600]).send();
-        await contracts.fees.actions.setstrategy(['buyramburn', 300]).send();
+        await contracts.fees.actions.setstrategy(['donatetorex', 1000]).send();
+        await contracts.fees.actions.setstrategy(['buyramburn', 500]).send();
     });
 
     test("eosio.fees::distibute", async () => {
@@ -109,8 +116,42 @@ describe(fees_contract, () => {
     })
 
     test("eosio.fees::distibute - after 10 minutes & user authority", async () => {
-        const time = TimePointSec.fromInteger(600);
-        await blockchain.addTime(time);
+        incrementTime();
         await contracts.fees.actions.distribute([]).send(bob); // any user is authorized to call distribute
+    });
+
+    test("eosio.fees::buyramself", async () => {
+        // 50% RAM burn / 50% RAM buy / 0% REX
+        await contracts.fees.actions.delstrategy(['donatetorex']).send();
+        await contracts.fees.actions.setstrategy(['buyramburn', 500]).send();
+        await contracts.fees.actions.setstrategy(['buyramself', 500]).send();
+        await contracts.token.actions.transfer(['eosio.token', fees_contract, '1000.0000 EOS', '']).send();
+        incrementTime();
+        const before = {
+            rex: {
+                balance: getTokenBalance(rex, 'EOS'),
+            },
+            fees: {
+                bytes: getRamBytes(burn),
+            },
+            burn: {
+                bytes: getRamBytes(burn),
+            }
+        }
+        await contracts.fees.actions.distribute([]).send();
+        const after = {
+            rex: {
+                balance: getTokenBalance(rex, 'EOS'),
+            },
+            fees: {
+                bytes: getRamBytes(burn),
+            },
+            burn: {
+                bytes: getRamBytes(burn),
+            }
+        }
+        expect(after.burn.bytes - before.burn.bytes).toBe(4377385)
+        expect(after.fees.bytes - before.fees.bytes).toBe(4377385)
+        expect(after.rex.balance - before.rex.balance).toBe(0)
     });
 })
