@@ -94,17 +94,6 @@ void fees::distribute()
     }
 }
 
-uint16_t fees::get_total_weight()
-{
-    strategies_table _strategies( get_self(), get_self().value );
-
-    uint16_t total_weight = 0;
-    for (auto& row : _strategies) {
-        total_weight += row.weight;
-    }
-    return total_weight;
-}
-
 void fees::update_next_epoch()
 {
     fees::settings_table _settings( get_self(), get_self().value );

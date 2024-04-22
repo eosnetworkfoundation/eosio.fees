@@ -103,10 +103,28 @@ namespace eosio {
         [[eosio::action]]
         void distribute();
 
+        // ACTION WRAPPERS
         using distribute_action = eosio::action_wrapper<"distribute"_n, &fees::distribute>;
+        using setstrategy_action = eosio::action_wrapper<"setstrategy"_n, &fees::setstrategy>;
+        using delstrategy_action = eosio::action_wrapper<"delstrategy"_n, &fees::delstrategy>;
+        using init_action = eosio::action_wrapper<"init"_n, &fees::init>;
+
+        /**
+         * Get the total weight of all strategies.
+         *
+         * @param contract - contract name
+         * @return uint16_t - total weight
+         */
+        static uint16_t get_total_weight( const name contract = "eosio.fees"_n ) {
+            strategies_table _strategies( contract, contract.value );
+            uint16_t total_weight = 0;
+            for (auto& row : _strategies) {
+                total_weight += row.weight;
+            }
+            return total_weight;
+        }
 
     private:
         void update_next_epoch();
-        uint16_t get_total_weight();
     };
 } /// namespace eosio
