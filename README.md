@@ -4,6 +4,15 @@
 
 The `eosio.fees` contract handles system fee distribution.
 
+```mermaid
+stateDiagram-v2
+    [*] --> eosio
+    eosio --> eosio.fees
+    eosio.fees --> eosio.bpay
+    eosio.fees --> eosio.rex
+    eosio.fees --> eosio.ram
+```
+
 ## Strategies
 
 The `eosio.fees` contract is designed to distribute fees from any outstanding EOS balance to a set of strategies. Each strategy is responsible for distributing the fees to a specific pool or contract based on a predefined logic. Each strategy has an associated weight which determines the percentage of fees that will be distributed to that strategy.
