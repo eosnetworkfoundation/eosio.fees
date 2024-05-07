@@ -8,10 +8,7 @@ The `eosio.fees` contract handles system fee distribution.
 graph TD
     eosio --> |System fees in EOS| eosio.fees
     eosio.fees --> weights{% weights}
-    weights -.-> |% Transfer| eosio.bpay
-    weights -.-> |% Buy RAM Self | eosio.ram
-    weights -.-> |% Buy RAM Burn | eosio.ram
-    weights -.-> |% Donate To REX | eosio.rex
+    weights -.-> |EOS Transfer| eosio.bpay
 ```
 
 ## Strategies
