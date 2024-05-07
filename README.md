@@ -9,12 +9,10 @@ graph TD
     eosio --> |System fees in EOS| eosio.fees
     eosio.fees --> weights{% weights}
     weights -.-> |% Transfer| eosio.bpay
-    weights -.-> |% Transfer| eosio.bonds
     weights -.-> |% Buy RAM Self | eosio.ram
     weights -.-> |% Buy RAM Burn | eosio.ram
     weights -.-> |% Donate To REX | eosio.rex
 ```
-
 
 ## Strategies
 
@@ -26,7 +24,6 @@ The `eosio.fees` contract is designed to distribute fees from any outstanding EO
 | `buyramburn`  | Buy RAM & Burn - Locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
 | `buyramself`  | Buy RAM Self - Accumulates RAM bytes within the `eosio.fees` account
 | `eosio.bpay`  | Block Producer Pay - Sends EOS to `eosio.bpay` contract for distribution to block producers
-| `eosio.bonds` | Bonds - Sends EOS to `eosio.bonds` contract which is distributed to Bond holders from 4 weeks up to 1 year period
 
 ## Development and Testing
 
