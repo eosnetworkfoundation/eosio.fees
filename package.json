@@ -5,12 +5,11 @@
         "test": "bun test"
     },
     "dependencies": {
-        "@eosnetwork/vert": "^1.0.0",
-        "@wharfkit/antelope": "^1.0.7",
-        "@wharfkit/contract": "^1.1.5"
+        "@eosnetwork/vert": "^1",
+        "@wharfkit/antelope": "^1"
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "typescript": "^5.3.3"
+        "typescript": "latest"
     }
 }
