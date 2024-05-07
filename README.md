@@ -6,13 +6,15 @@ The `eosio.fees` contract handles system fee distribution.
 
 ```mermaid
 graph TD
-    eosio --> |System fees| eosio.fees
-    eosio.fees -.-> |Transfer| eosio.bpay
-    eosio.fees -.-> |Transfer| eosio.bonds
-    eosio.fees -.-> |Buy RAM Self | eosio.ram
-    eosio.fees -.-> |Buy RAM Burn | eosio.ram
-    eosio.fees -.-> |Donate To REX | eosio.rex
+    eosio --> |System fees in EOS| eosio.fees
+    eosio.fees --> weights{% weights}
+    weights -.-> |% Transfer| eosio.bpay
+    weights -.-> |% Transfer| eosio.bonds
+    weights -.-> |% Buy RAM Self | eosio.ram
+    weights -.-> |% Buy RAM Burn | eosio.ram
+    weights -.-> |% Donate To REX | eosio.rex
 ```
+
 
 ## Strategies
 
