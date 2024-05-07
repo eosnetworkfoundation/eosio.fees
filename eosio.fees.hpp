@@ -14,6 +14,7 @@ namespace eosio {
         "buyramself"_n,
         "donatetorex"_n,
         "eosio.bpay"_n,
+        "eosio.bonds"_n,
     };
     /**
      * The `eosio.fees` contract handles system fees distribution.
@@ -92,10 +93,10 @@ namespace eosio {
         /**
          * Delete a strategy.
          *
-         * @param strategies - strategy names to delete
+         * @param strategy - strategy name to delete
          */
         [[eosio::action]]
-        void delstrategy( const vector<name> strategies );
+        void delstrategy( const name strategy );
 
         /**
          * Distribute fees to all defined strategies.

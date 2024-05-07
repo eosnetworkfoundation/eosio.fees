@@ -37,17 +37,15 @@ void fees::setstrategy( const name strategy, const uint16_t weight ) {
 }
 
 [[eosio::action]]
-void fees::delstrategy( const vector<name> strategies )
+void fees::delstrategy( const name strategy )
 {
     require_auth( get_self() );
 
     strategies_table _strategies( get_self(), get_self().value );
 
-    for (const auto& strategy : strategies) {
-        auto itr = _strategies.find(strategy.value);
-        check(itr != _strategies.end(), "strategy not found");
-        _strategies.erase(itr);
-    }
+    auto itr = _strategies.find(strategy.value);
+    check(itr != _strategies.end(), "strategy not found");
+    _strategies.erase(itr);
 }
 
 [[eosio::action]]
@@ -72,21 +70,26 @@ void fees::distribute()
         eosiosystem::system_contract::buyramself_action buyramself( "eosio"_n, { get_self(), "active"_n });
         eosio::token::transfer_action transfer( "eosio.token"_n, { get_self(), "active"_n });
 
-        // Donate to REX - Distributes fees to REX pool which is distributed to REX holders over a 30 day period
+        // Donate to REX
         if ( row.strategy == "donatetorex"_n) {
             donatetorex.send( get_self(), fee_to_distribute, "system fees" );
 
-        // Buy RAM & Burn - locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
+        // Buy RAM Burn
         } else if ( row.strategy == "buyramburn"_n) {
             buyramburn.send( get_self(), fee_to_distribute, "system fees" );
 
-        // Buy RAM Self -Accumulates RAM bytes within the `eosio.fees` account
+        // Buy RAM Self
         } else if ( row.strategy == "buyramself"_n) {
             buyramself.send( get_self(), fee_to_distribute );
 
-        // Block Producer Pay - Sends EOS to `eosio.bpay` contract for distribution to block producers
+
+        // Block Producer Pay
         } else if ( row.strategy == "eosio.bpay"_n) {
             transfer.send( get_self(), "eosio.bpay"_n, fee_to_distribute, "system fees" );
+
+        // Bonds
+        } else if ( row.strategy == "eosio.bonds"_n) {
+            transfer.send( get_self(), "eosio.bonds"_n, fee_to_distribute, "system fees" );
 
         } else {
             check( false, "strategy not defined");

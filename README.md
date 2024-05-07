@@ -5,12 +5,13 @@
 The `eosio.fees` contract handles system fee distribution.
 
 ```mermaid
-stateDiagram-v2
-    [*] --> eosio
-    eosio --> eosio.fees
-    eosio.fees --> eosio.bpay
-    eosio.fees --> eosio.rex
-    eosio.fees --> eosio.ram
+graph TD
+    eosio --> |System fees| eosio.fees
+    eosio.fees -.-> |Transfer| eosio.bpay
+    eosio.fees -.-> |Transfer| eosio.bonds
+    eosio.fees -.-> |Buy RAM Self | eosio.ram
+    eosio.fees -.-> |Buy RAM Burn | eosio.ram
+    eosio.fees -.-> |Donate To REX | eosio.rex
 ```
 
 ## Strategies
@@ -23,6 +24,7 @@ The `eosio.fees` contract is designed to distribute fees from any outstanding EO
 | `buyramburn`  | Buy RAM & Burn - Locks up additional EOS in RAM pool while reducing the total circulating supply of RAM
 | `buyramself`  | Buy RAM Self - Accumulates RAM bytes within the `eosio.fees` account
 | `eosio.bpay`  | Block Producer Pay - Sends EOS to `eosio.bpay` contract for distribution to block producers
+| `eosio.bonds` | Bonds - Sends EOS to `eosio.bonds` contract which is distributed to Bond holders from 4 weeks up to 1 year period
 
 ## Development and Testing
 
