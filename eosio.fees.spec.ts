@@ -91,6 +91,13 @@ describe(fees_contract, () => {
         )
     });
 
+    test("Cannot init with a 0 interval", async () => {
+        await expectToThrow(
+            contracts.fees.actions.init([0]).send(),
+            "eosio_assert: epoch_time_interval must be greater than 0"
+        )
+    });
+
     test('eosio.fees::init', async () => {
         await contracts.fees.actions.init([TEN_MINUTES]).send()
 
