@@ -116,9 +116,9 @@ namespace eosio {
          * @param contract - contract name
          * @return uint16_t - total weight
          */
-        static uint16_t get_total_weight( const name contract = "eosio.fees"_n ) {
+        static uint32_t get_total_weight( const name contract = "eosio.fees"_n ) {
             strategies_table _strategies( contract, contract.value );
-            uint16_t total_weight = 0;
+            uint32_t total_weight = 0;
             for (auto& row : _strategies) {
                 total_weight += row.weight;
             }
