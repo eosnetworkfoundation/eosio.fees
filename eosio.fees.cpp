@@ -5,6 +5,7 @@ namespace eosio {
 [[eosio::action]]
 void fees::init( const uint32_t epoch_time_interval ) {
     require_auth( get_self() );
+    check( epoch_time_interval > 0, "epoch_time_interval must be greater than 0" );
 
     settings_table _settings( get_self(), get_self().value );
     auto settings = _settings.get_or_default();
@@ -55,7 +56,7 @@ void fees::distribute()
     update_next_epoch();
 
     strategies_table _strategies( get_self(), get_self().value );
-    const uint16_t total_weight = get_total_weight();
+    const uint32_t total_weight = get_total_weight();
 
     // distributing fees in EOS
     const asset balance = eosio::token::get_balance( "eosio.token"_n, get_self(), symbol_code("EOS") );

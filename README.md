@@ -42,3 +42,23 @@ $ npm test
 > test
 > bun test
 ```
+
+#### Exported memory errors
+
+```
+TypeError: undefined is not an object (evaluating 'this.memory.buffer')
+```
+
+If you're using a version of CDT to build that doesn't support exported memory, you'll need to export it manually for VeRT tests to work.
+
+```bash
+# Grab wabt
+sudo apt-get install wabt
+
+# Create a temporary wat file and export the memory
+wasm2wat eosio.fees.wasm | sed -e 's|(memory |(memory (export "memory") |' > eosio.fees.wat
+wat2wasm -o eosio.fees.wasm eosio.fees.wat
+rm eosio.fees.wat
+```
+
+You can also use the `./build.sh` script that will handle building and exporting memory for you.
