@@ -16,7 +16,9 @@ jobs:
         run: npm run build
 
       - name: Compute hash
-        run: echo $(shasum -a 256 eosio.fees.wasm)
+        run: |
+          echo $(shasum -a 256 eosio.fees.wasm)
+          echo $(shasum -a 256 eosio.fees.abi)
 
       - name: Release
         uses: softprops/action-gh-release@v1
