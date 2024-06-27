@@ -1,0 +1,29 @@
+name: Antelope CDT
+
+on: [push]
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Antelope CDT
+        run: wget https://github.com/AntelopeIO/cdt/releases/download/v4.0.1/cdt_4.0.1_amd64.deb && sudo apt install ./cdt_4.0.1_amd64.deb
+
+      - name: Compile WASM
+        run: npm run build
+
+      - name: Compute hash
+        run: |
+          echo $(shasum -a 256 eosio.fees.wasm)
+          echo $(shasum -a 256 eosio.fees.abi)
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            *.abi
+            *.wasm

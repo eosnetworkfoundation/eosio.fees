@@ -164,8 +164,14 @@ describe(fees_contract, () => {
         await expectToThrow(action, 'eosio_assert: epoch not finished')
     })
 
-    test("eosio.fees::distibute - after 10 minutes & user authority", async () => {
+    test("eosio.fees::distibute::error - no fees to distribute", async () => {
         incrementTime();
+        const action = contracts.fees.actions.distribute([]).send();
+        await expectToThrow(action, 'eosio_assert: no fees to distribute')
+    });
+
+    test("eosio.fees::distibute - after 10 minutes & user authority", async () => {
+        await contracts.token.actions.transfer(['eosio.token', fees_contract, '1500.0000 EOS', '']).send();
         await contracts.fees.actions.distribute([]).send(bob); // any user is authorized to call distribute
     });
 

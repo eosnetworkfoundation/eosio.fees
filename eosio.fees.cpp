@@ -61,6 +61,8 @@ void fees::distribute()
     // distributing fees in EOS
     const asset balance = eosio::token::get_balance( "eosio.token"_n, get_self(), symbol_code("EOS") );
 
+    check( balance.amount > 0, "no fees to distribute" );
+
     for ( auto& row : _strategies ) {
         const asset fee_to_distribute = balance * row.weight / total_weight;
         if (fee_to_distribute.amount <= 0) continue; // skip if no fee to distribute
